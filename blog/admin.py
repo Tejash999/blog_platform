@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User, Profile, Post, Comment, Category, Tag
-
+#Superuser is created here. 
 # Register custom User model using Django's built-in UserAdmin
-# This gives us the full user management interface in admin
+# This gives us the full user management interface in admin panel with our custom fields included.
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'role', 'is_staff')
