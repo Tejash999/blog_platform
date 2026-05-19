@@ -1,0 +1,24 @@
+# Virtual environment — never commit this
+env/
+
+# Environment variables — contains secrets
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django generated files
+*.log
+db.sqlite3
+staticfiles/
+media/
+
+# VS Code settings
+.vscode/
+
+# Windows system files
+Thumbs.db
+desktop.ini
