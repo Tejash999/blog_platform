@@ -146,4 +146,37 @@ class PostDetailSerializer(serializers.ModelSerializer):
         # Returns only top-level comments (no parent). Replies are nested inside each comment via CommentSerializer.
         top_level = obj.comments.filter(parent=None)
         return CommentSerializer(top_level, many=True).data 
+
+#Login Serializer 
+class LoginSerializer(serializers.Serializer): #accepts username and password for login and valid credentials.
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data): # check if suername and password are correct. 
+        from django.contrib.auth import authenticate
+        user = authenticate(username=data['username'], password=data['password'])
+        if not user:
+            raise serializers.ValidationError("Invalid username or password.")
+        if not user.is_active:
+            raise serializers.ValidationError("This account has been disabled.")
+        data['user'] = user
+        return data
+
+
+# Change password Serializer 
+class ChangePasswordSerializer(serializers.Serializer): #serializer for changing password. requires old password to verify and confirm the new one
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=8)
+    confirm_password = serializers.CharField(write_only=True, min_length=8)
+
+    def validate(self, data): # check if new_password and confirm-password match  
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError("New passwords do not match.")
+        return data
+
+    def validate_old_password(self, value): # check that the old password is correct for the current user
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is incorrect.")
+        return value
         
