@@ -41,7 +41,8 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
-    'rest_framework_simplejwt',
+    'rest_framework_simplejwt', # JWT authentication for API
+    'rest_framework_simplejwt.token_blacklist', # Token blacklisting for JWT
     'django_filters',
 
     # Our blog app
