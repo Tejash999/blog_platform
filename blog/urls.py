@@ -7,7 +7,7 @@ from .views import (
     CategoryViewSet, TagViewSet
 )
 
-# ─── ROUTER ───────────────────────────────────────────────────
+# Router for generating RESTFUL URLS to the viewsets 
 # Automatically generates CRUD URLs for all ViewSets
 router = DefaultRouter()
 router.register(r'posts', PostViewSet, basename='post')
@@ -19,25 +19,12 @@ urlpatterns = [
     # Authentication endpoints 
     # POST /api/register/          (for creating new account)
     path('register/', RegisterView.as_view(), name='register'),
-
-    # POST /api/login/             (to get JWT tokens)
-    path('login/', LoginView.as_view(), name='login'),
-
-    # POST /api/logout/            (blacklist refresh token for logging out)
-    path('logout/', LogoutView.as_view(), name='logout'),
-
-    # POST /api/change-password/   (change own password)
-    path('change-password/', ChangePasswordView.as_view(), name='change_password'),
-
-
-
+    path('login/', LoginView.as_view(), name='login'),  #POST /api/login/ (to get JWT tokens)
+    path('logout/', LogoutView.as_view(), name='logout'), # POST /api/logout/ (blacklist refresh token for logging out)
+    path('change-password/', ChangePasswordView.as_view(), name='change_password'), # POST /api/change-password/ (change own password)
     # User endpoints
-    # GET/PUT /api/me/             (to view or update own account)
-    path('me/', UserDetailView.as_view(), name='user_detail'),
-
-    # GET/PUT /api/profile/        (to view or update own profile)
-    path('profile/', ProfileView.as_view(), name='profile'),
-
-    #Resource endpoints
-    path('', include(router.urls)),
+    path('me/', UserDetailView.as_view(), name='user_detail'), # GET/PUT /api/me/ (to view or update own account)
+    path('profile/', ProfileView.as_view(), name='profile'), # GET/PUT /api/profile/ (to view or update own profile)
+    # Resource endpoints
+    path('', include(router.urls)), #Include all the automatically generated URLs from the router
 ]
