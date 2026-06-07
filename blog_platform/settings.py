@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', # JWT authentication for API
     'rest_framework_simplejwt.token_blacklist', # Token blacklisting for JWT
     'django_filters',
+    'drf_spectacular', # API documentation generation with Swagger UI 
 
     # Our blog app
     'blog',
@@ -128,12 +129,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# ─── DEFAULT PRIMARY KEY ──────────────────────────────────────
+# DEFAULT PRIMARY KEY 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# ─── DJANGO REST FRAMEWORK ────────────────────────────────────
+#  DJANGO REST FRAMEWORK 
 REST_FRAMEWORK = {
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #DRF-spectacular for API documentation generation 
+    
     # Use JWT tokens for all API authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -154,7 +158,7 @@ REST_FRAMEWORK = {
 }
 
 
-# ─── JWT CONFIGURATION ────────────────────────────────────────
+#  JWT CONFIGURATION 
 SIMPLE_JWT = {
     # Access token expires after 1 day
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
@@ -162,4 +166,38 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# DRF SPECTACULAR (API DOCUMENTATION) 
+SPECTACULAR_SETTINGS = {
+    # Title shown at the top of the Swagger page
+    'TITLE': 'Blog Platform API',
+
+    # Short description of the API
+    'DESCRIPTION': '''
+        A REST API for a Blog Platform built with Django REST Framework.
+        It consists of the following features:
+        - JWT Authentication (register, login, logout)
+        - Role-based access (Authors manage posts, Readers manage comments)
+        - Full CRUD for Posts, Comments, Categories and Tags
+        - Search, Filtering and Pagination
+    ''',
+
+    # API version
+    'VERSION': '1.0.0',
+
+    # Show authentication button in Swagger UI
+    'SERVE_INCLUDE_SCHEMA': False,
+
+    # JWT token configuration for Swagger UI
+    'SECURITY': [{'bearerAuth': []}],
+    'COMPONENTS': {
+        'securitySchemes': {
+            'bearerAuth': {
+                'type': 'http',
+                'scheme': 'bearer',
+                'bearerFormat': 'JWT',
+            }
+        }
+    },
 }

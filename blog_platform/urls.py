@@ -23,7 +23,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 urlpatterns = [
     # Django admin panel
     path('admin/', admin.site.urls),
@@ -36,6 +40,16 @@ urlpatterns = [
 
     # All blog API endpoints (posts, comments, categories, tags)
     path('api/', include('blog.urls')),
+    
+    # API Documentation endpoints 
+    # Downloads the raw OpenAPI schema as a JSON/YAML file
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+
+    # Swagger UI — beautiful interactive API docs
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+
+    # ReDoc UI — alternative clean documentation view
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 # Serve media files (avatars, uploads) during development
