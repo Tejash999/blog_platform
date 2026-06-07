@@ -255,10 +255,35 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 # Login View 
-@extend_schema(   # Decorator for LoginView 
+@extend_schema(
     tags=['Authentication'],
     summary='Login and get JWT tokens',
     description='Accepts username and password. Returns access and refresh JWT tokens on success.',
+    request=LoginSerializer,
+    responses={
+        200: {
+            'type': 'object',
+            'properties': {
+                'message': {'type': 'string'},
+                'user': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'username': {'type': 'string'},
+                        'email': {'type': 'string'},
+                        'role': {'type': 'string'},
+                    }
+                },
+                'tokens': {
+                    'type': 'object',
+                    'properties': {
+                        'access': {'type': 'string'},
+                        'refresh': {'type': 'string'},
+                    }
+                }
+            }
+        }
+    }
 )
 class LoginView(APIView): #Custom login endpoint which accepts username and password. also return jwt access along with user info 
 
@@ -290,10 +315,19 @@ class LoginView(APIView): #Custom login endpoint which accepts username and pass
 
 
 # Logout View
-@extend_schema(  # Decorator for LogoutView 
+@extend_schema(
     tags=['Authentication'],
     summary='Logout and blacklist refresh token',
-    description='Blacklists the refresh token so it can no longer be used to get new access tokens.',
+    description='Blacklists the refresh token so it can no longer be used.',
+    request={
+        'application/json': {
+            'type': 'object',
+            'properties': {
+                'refresh': {'type': 'string'}
+            }
+        }
+    },
+    responses={205: {'description': 'Logout successful.'}}
 )
 class LogoutView(APIView):# Logout endpoint. Blacklists the refresh token so it can no longer be used. The user must send their refresh token in the request body.
    
@@ -323,10 +357,12 @@ class LogoutView(APIView):# Logout endpoint. Blacklists the refresh token so it 
 
 
 # Change password View 
-@extend_schema( # Decorator for ChangePasswordView 
+@extend_schema(
     tags=['Authentication'],
     summary='Change user password',
-    description='Allows authenticated users to change their password by providing the old and new password.',
+    description='Allows authenticated users to change their password.',
+    request=ChangePasswordSerializer,
+    responses={200: {'description': 'Password changed successfully.'}}
 )
 class ChangePasswordView(APIView): #Allows authenticated users to change their password.It requires old password for verification.It requires new password and confirmation to match.
     permission_classes = [permissions.IsAuthenticated]
